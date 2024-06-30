@@ -1,0 +1,138 @@
+<mat-drawer-container class="example-container" [hasBackdrop]="true">
+  <mat-drawer #drawer [mode]="'over'" style="width: 650px" [position]="'end'">
+    <div class="item-align mat-drawer-header">
+      <h4>Products List</h4>
+
+      <button
+        mat-icon-button
+        color="primary"
+        (click)="drawer.toggle()"
+        aria-label="Example icon button with a open in new tab icon"
+      >
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+    <div class="scroll-cart-list">
+      <ng-container *ngIf="cartItemsList$ | async as cartItemsList">
+        <ng-container *ngIf="cartItemsList?.length; else noDataInCart">
+          <mat-card
+            *ngFor="let item of cartItemsList"
+            class="outline-card item-align"
+          >
+            <p style="flex-grow: 1; max-width: 100%">{{ item.item.title }}</p>
+            <div class="item-align">
+              <button
+                mat-icon-button
+                color="primary"
+                (click)="action('add', item)"
+                aria-label="Example icon button with a open in new tab icon"
+              >
+                <mat-icon>add</mat-icon>
+              </button>
+              <button
+                mat-icon-button
+                color="primary"
+                (click)="action('remove', item)"
+                aria-label="Example icon button with a open in new tab icon"
+              >
+                <mat-icon>remover</mat-icon>
+              </button>
+              <button
+                mat-icon-button
+                color="warn"
+                (click)="action('delete', item)"
+                aria-label="Example icon button with a open in new tab icon"
+              >
+                <mat-icon class="material-icons-outlined">delete</mat-icon>
+              </button>
+              <div style="width: 90px; text-align: right">
+                {{ item.noOfItems }} X {{ item.item.price | currency : "INR" }}
+              </div>
+            </div>
+          </mat-card>
+          <div class="item-align">
+            <p>Total Items: {{ cartCount$ | async }}</p>
+            <p>Total price: {{ totalPrice$ | async | currency : "INR" }}</p>
+          </div>
+        </ng-container>
+        <ng-template #noDataInCart>
+          <div
+            style="
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              width: 100%;
+            "
+          >
+            <p>
+              <mat-icon class="material-icons-outlied mat-icon-18"
+                >shopping_cart</mat-icon
+              >
+              No Products In Cart
+            </p>
+          </div>
+        </ng-template>
+      </ng-container>
+    </div>
+  </mat-drawer>
+  <mat-drawer-content>
+    <div class="item-align" style="margin-inline: 18px; margin-block: 16px">
+      <h3>Products</h3>
+      <button
+        style="margin-left: auto; margin-right: 10px"
+        mat-raised-button
+        [matBadge]="cartCount$ | async"
+        matBadgePosition="after"
+        (click)="drawer.toggle()"
+      >
+        <mat-icon class="material-icons-outlied mat-icon-18"
+          >shopping_cart</mat-icon
+        >
+        Open Cart
+      </button>
+    </div>
+    <div class="card-wrapper">
+      <ng-container *ngIf="productsList$ | async as productsList">
+        <mat-card class="example-card" *ngFor="let product of productsList">
+          <div
+            style="text-align: center; background-color: #fafafa; height: 170px"
+          >
+            <img [src]="product?.image" [alt]="product.title" width="100" />
+          </div>
+          <p>
+            {{ product.title }}
+          </p>
+          <div
+            style="
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+            "
+          >
+            <span>{{ product.price | currency : "INR" }}</span>
+            <button
+              mat-mini-fab
+              matTooltip="Add To Cart"
+              color="primary"
+              (click)="addItemInCart(product)"
+            >
+              <mat-icon>shopping_cart</mat-icon>
+            </button>
+            <!-- <button
+              mat-mini-fab
+              (click)="addItemInCart(product)"
+            >
+              <mat-icon>shopping_cart</mat-icon>
+            </button>
+            <button
+              mat-mini-fab
+              (click)="addItemInCart(product)"
+            >
+              <mat-icon>shopping_cart</mat-icon>
+            </button> -->
+          </div>
+        </mat-card>
+      </ng-container>
+    </div>
+  </mat-drawer-content>
+</mat-drawer-container>
